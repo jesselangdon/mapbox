@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Riverscapes Data Products</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { 
+            font: 500 12px/16px 'Helvetica Neue', Helvetica, Arial, Sans-serif;
+            margin:0; 
+            padding:0; }
+        h1 {
+          font-size: 18px;
+          margin: 0;
+          font-weight: 400;
+          line-height: 20px;
+          padding: 10px 2px;
+        }
+        .map {
+            position: absolute;
+            right: 25%;
+            width: 75%;
+            top: 0;
+            bottom: 0;
+        }
+        .header {
+            background: #ddd;
+            height: 40px;
+            line-height: 30px;
+            padding: 0 10px;
+        }
+        .sidebar {
+            position: absolute;
+            width: 25%;
+            height: 100%;
+            top: 0;
+            right: 0;
+            overflow: hidden;
+            border-left: 1px solid rgba(0,0,0,0.3);
+        }
+        .pad2 {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        #menu {
+            background: #fff;
+            padding: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.3);
+        }
+        .block {
+            display: block;
+        }
+        .sidepanel {
+            background: #fff;
+            padding: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.3);
+        }
+        #legend {
+            background: #fff;
+            padding: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+<div id='map' class='map pad2'></div>
+<div class='sidebar'>
+    <div class='header'>
+        <h1>Riverscapes Data Products</h1>
+    </div>
+    <div class='sidepanel'>
+        <p>Sample of geospatial data products developed for
+        the <a href="https://github.com/Riverscapes" target="_blank">Riverscapes</a> project. Please select a data
+        layer to display and review.</p>
+    </div>
+    <div id='menu'>
+        <label class="block" for='conductivity'><input id='cjatvi6f7683x2rmpfcoevu94' type='radio' name='rtoggle' value='conductivity' checked='checked'>Electrical Conductivity</label>
+        <label class="block" for='confinement'><input id='cjatvtnmx99582rmsh3nxzpnp' type='radio' name='rtoggle' value='confinement'>Channel Confinement</label>
+        <label class="block" for='solar'><input id='cjatump9j0zqg2sny3ty522zl' type='radio' name='rtoggle' value='solar'>Solar Radiation</label>
+    </div>
+    <div id="legend">
+        <h4>Electrical Conductivity</h4>
+        <p>Electrical conductivity is a potential indicator for macroinvertabrate species richness, and is another component of gross primary productivity. This data is the result of predicting conductivity and summarizing upstream conductivity values for each stream segments.<br />
+        <p>μS cm<sup>−1</sup></p>
+        <img src=./assets/legend_cond.png>
+    </div>
+</div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiamVzc2VsYW5nZG9uIiwiYSI6Ik95UXU5NzAifQ.pWjhVfOGoElD6u8shUEBlw';
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/jesselangdon/cjatvi6f7683x2rmpfcoevu94',
+    zoom: 9,
+    center: [-115.660,46.115]
+    });
+
+// switch between layers on radio button click
+var layerList = document.getElementById('menu');
+var inputs = layerList.getElementsByTagName('input');
+
+function switchLayer(layer) {
+    var layerId = layer.target.id
+    var layerValue = layer.target.value;
+    map.setStyle('mapbox://styles/jesselangdon/' + layerId);
+    divLegend = document.getElementById("legend")
+    if (layerValue == 'confinement') {
+        divLegend.innerHTML = "<h4>Channel Confinement</h4><p>Confinement, which is one of the primary controls of river morphology, is calculated by dividing floodplain width by channel width. This is a unitless measure.</p><br /><img src=./assets/legend_conf.png>";
+    } else if (layerValue == 'solar') {
+        divLegend.innerHTML = "<h4>Solar Radiation</h4><p>Solar radiation was calculated as a proxy for shading of water surfaces in a drainage network. This serves as an important component of gross primary production for salmon life-cycle modeling. The Solar Radiation dataset is the result of summarizing upstream solar radiation values for each stream segment feature</p><br /><p>Watt hours/sq. meter</p><img src=./assets/legend_solar.png>";
+    } else {
+        divLegend.innerHTML = "<h4>Electrical Conductivity</h4><p>Electrical conductivity is a potential indicator for macroinvertabrate species richness, and is another component of gross primary productivity. This data is the result of predicting conductivity and summarizing upstream conductivity values for each stream segment feature.<br /><p>μS cm<sup>−1</sup></p><img src=./assets/legend_cond.png>";
+    }
+}
+
+for (var i = 0; i < inputs.length; i++) {
+    inputs[i].onclick = switchLayer;
+    }
+
+// Add zoom and rotation controls to the map.
+map.addControl(new mapboxgl.NavigationControl());
+</script>
+
+</body>
+</html>
